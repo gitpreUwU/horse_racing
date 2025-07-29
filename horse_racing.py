@@ -128,9 +128,39 @@ def select_horses():
     return horses
 
 def main():
-    print("🐎 Welcome to Horse Racing Game! 🐎")
-    print(f"💰 Starting money: ${STARTING_MONEY}")
+    from status import RaceStats
+    stats = RaceStats()
     
+    while True:
+        print("\n🐎 Welcome to Horse Racing Game! 🐎")
+        print("1. 🏇 Race")
+        print("2. 📊 Statistics") 
+        print("3. 🚪 Exit")
+        
+        if DEV_MODE_AVAILABLE:
+            print("9. 🔧 Developer Mode")
+        
+        try:
+            choice = input("\nChoose option: ")
+            
+            if choice == "1":
+                run_single_race(stats)
+            elif choice == "2":
+                stats.show_stats()
+            elif choice == "3":
+                print("Thanks for playing! 🎉")
+                break
+            elif choice == "9" and DEV_MODE_AVAILABLE:
+                check_access()
+            else:
+                print("Invalid choice!")
+                
+        except KeyboardInterrupt:
+            print("\nGoodbye! 👋")
+            break
+
+def run_single_race(stats):
+    """Run a single race"""
     horses = select_horses()
     betting_system = BettingSystem()
     
@@ -142,14 +172,16 @@ def main():
     print("-" * 70)
     
     # Betting phase
+    player_bet = 0
     try:
-        choice = int(input("\n🎯 Choose horse to bet on (1-4): ")) - 1
-        amount = int(input("💰 Bet amount: $"))
-        
-        if 0 <= choice < len(horses):
-            betting_system.place_bet(horses[choice], amount)
-        else:
-            print("❌ Invalid choice!")
+        choice = int(input("\n🎯 Choose horse to bet on (1-4, 0 to skip): "))
+        if choice > 0:
+            amount = int(input("💰 Bet amount: $"))
+            if 1 <= choice <= len(horses):
+                if betting_system.place_bet(horses[choice-1], amount):
+                    player_bet = amount
+            else:
+                print("❌ Invalid choice!")
     except ValueError:
         print("❌ Invalid input!")
     
@@ -169,13 +201,11 @@ def main():
     print("=" * 50)
     
     # Calculate winnings
-    betting_system.calculate_winnings(winner)
+    winnings = betting_system.calculate_winnings(winner)
     print(f"\n💰 Final money: ${betting_system.player_money}")
     
-    if betting_system.total_winnings > 0:
-        print(f"📈 Total profit: ${betting_system.total_winnings}")
-    else:
-        print(f"📉 Total loss: ${-betting_system.total_winnings}")
+    # Record stats
+    stats.record_race(horses, results, player_bet, winnings)
 
 if __name__ == "__main__":
     main()
