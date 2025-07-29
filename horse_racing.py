@@ -1,6 +1,13 @@
 import random
 import time
 from config import *
+import sys
+
+try:
+    from dev_utils import check_access
+    DEV_MODE_AVAILABLE = True
+except ImportError:
+    DEV_MODE_AVAILABLE = False
 
 class Horse:
     def __init__(self, name, speed, stamina, luck):
