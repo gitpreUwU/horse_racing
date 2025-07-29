@@ -127,15 +127,18 @@ def select_horses():
         horses.append(Horse(**preset))
     return horses
 
+# main関数に追加
 def main():
     from status import RaceStats
+    from replay import show_replay_menu
     stats = RaceStats()
     
     while True:
         print("\n🐎 Welcome to Horse Racing Game! 🐎")
         print("1. 🏇 Race")
         print("2. 📊 Statistics") 
-        print("3. 🚪 Exit")
+        print("3. 🎬 Race Replays")
+        print("4. 🚪 Exit")
         
         if DEV_MODE_AVAILABLE:
             print("9. 🔧 Developer Mode")
@@ -148,6 +151,8 @@ def main():
             elif choice == "2":
                 stats.show_stats()
             elif choice == "3":
+                show_replay_menu()
+            elif choice == "4":
                 print("Thanks for playing! 🎉")
                 break
             elif choice == "9" and DEV_MODE_AVAILABLE:
