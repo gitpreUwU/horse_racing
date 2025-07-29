@@ -131,14 +131,27 @@ def select_horses():
 def main():
     from status import RaceStats
     from replay import show_replay_menu
+    from tournament import Tournament
+    
     stats = RaceStats()
     
+    # Welcome message with ASCII art
+    print("""
+    🐎 ═══════════════════════════════════════════ 🐎
+         Welcome to Horse Racing Championship!
+         
+                🏇    🏇    🏇    🏇
+               Thunder Lightning Storm Wind
+    🐎 ═══════════════════════════════════════════ 🐎
+    """)
+    
     while True:
-        print("\n🐎 Welcome to Horse Racing Game! 🐎")
-        print("1. 🏇 Race")
-        print("2. 📊 Statistics") 
-        print("3. 🎬 Race Replays")
-        print("4. 🚪 Exit")
+        print("\n🎮 MAIN MENU")
+        print("1. 🏇 Single Race")
+        print("2. 🏆 Tournament Mode")
+        print("3. 📊 Statistics") 
+        print("4. 🎬 Race Replays")
+        print("5. 🚪 Exit")
         
         if DEV_MODE_AVAILABLE:
             print("9. 🔧 Developer Mode")
@@ -149,20 +162,27 @@ def main():
             if choice == "1":
                 run_single_race(stats)
             elif choice == "2":
-                stats.show_stats()
+                tournament = Tournament(3)
+                tournament.run_tournament()
             elif choice == "3":
-                show_replay_menu()
+                stats.show_stats()
             elif choice == "4":
+                show_replay_menu()
+            elif choice == "5":
                 print("Thanks for playing! 🎉")
+                print("May the horses be with you! 🐎")
                 break
             elif choice == "9" and DEV_MODE_AVAILABLE:
                 check_access()
             else:
-                print("Invalid choice!")
+                print("❌ Invalid choice!")
                 
         except KeyboardInterrupt:
             print("\nGoodbye! 👋")
             break
+        except Exception as e:
+            print(f"❌ Error: {e}")
+
 
 def run_single_race(stats):
     """Run a single race"""
