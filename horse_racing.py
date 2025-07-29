@@ -23,25 +23,23 @@ class Horse:
     
     def move(self):
         # Calculate movement based on stats
-        move_distance = self.speed + random.randint(-2, 2)
+        base_speed = self.speed + random.randint(-1, 1)  # Reduced randomness
         
-        # Apply stamina effect
-        if self.tired > 5:
-            move_distance -= 2
-        elif self.stamina > 8:
-            move_distance += 1
+        # Apply stamina effect more gradually
+        stamina_penalty = max(0, (self.tired - self.stamina) // 2)
+        move_distance = base_speed - stamina_penalty
         
-        # Apply luck
+        # Apply luck bonus
         if random.randint(1, 10) <= self.luck:
             move_distance += random.randint(1, 2)
         
-        # Increase tiredness
-        self.tired += random.randint(0, 2)
+        # Increase tiredness based on speed
+        fatigue_rate = 3 - (self.stamina // 3)
+        self.tired += random.randint(0, fatigue_rate)
         
         # Minimum movement is 1
         move_distance = max(1, move_distance)
         
-        #1/2 flag is fwectf{y0u_ar3_g
         self.position += move_distance
         return move_distance
 
